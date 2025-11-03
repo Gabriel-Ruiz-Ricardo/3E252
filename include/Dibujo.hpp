@@ -1,73 +1,31 @@
 #pragma once
+
+// Clase para dibujar figuras ASCII en la pantalla usando FTXUI
+#include <vector>
 #include <string>
-#include <list>
-using namespace std;
-
 #include <ftxui/screen/screen.hpp>
-using namespace ftxui;
 
-class Dibujo
-{
-private:
-    list<string> dibujo;
-    int x = 0;
-    int y = 0;
-    Color fondo;
-    Color color;
-
+class Dibujo {
 public:
-    Dibujo(list<string> dibujo)
-    {
-            this->dibujo = dibujo;
-    }
+    int x, y;
+    std::vector<std::u32string> figura;
+    ftxui::Color color;
 
-    Dibujo(Color color, Color fondo, 
-        list<string> dibujo)
-    {
-        this->dibujo = dibujo;
-        this->color = color;
-        this->dibujo = dibujo;
-    }
+    Dibujo(int x, int y, const std::vector<std::u32string>& figura, ftxui::Color color = ftxui::Color::White)
+        : x(x), y(y), figura(figura), color(color) {}
 
-
-    void Imprimir(Screen& pantalla)
-    {
-        int fila = 0;
-        for (auto &linea : dibujo)
-        {
-            int columna = 0;
-            for (auto &letra : linea)
-            {
-                Pixel &pixel = pantalla.PixelAt(
-                    x + columna, 
-                    y + fila
-                );
-                pixel.character = letra;
-                pixel.background_color = fondo;
-                pixel.foreground_color = color;
-                columna++;
+    void Dibujar(ftxui::Screen& screen) const {
+        for (size_t row = 0; row < figura.size(); ++row) {
+            for (size_t col = 0; col < figura[row].size(); ++col) {
+                int px = x + col;
+                int py = y + row;
+                if (px < screen.dimx() && py < screen.dimy() && figura[row][col] != U' ') {
+                    auto& pixel = screen.PixelAt(px, py);
+                    pixel.character = figura[row][col];
+                    pixel.bold = true;
+                    pixel.foreground_color = color;
+                }
             }
-            fila++;
         }
-    }
-
-    void MoverDerecha()
-    {
-        x++;
-    }
-
-    void MoverIzquierda()
-    {
-        x--;
-    }
-
-    void MoverAbajo()
-    {
-        y++;
-    }
-
-    void MoverArriba()
-    {
-        y--;
     }
 };

@@ -7,10 +7,10 @@ ejecutar: bin/punteros
 assets/kristally.mp3 : assets/kristally.wav
 	ffmpeg -i assets/kristally.wav -codec:a libmp3lame -qscale:a 2 assets/kristally.mp3
 
-bin/ejemplo : src/ejemplo.cpp
-	c++ src/ejemplo.cpp -o bin/ejemplo -Iinclude -l ftxui-screen
+bin/animacion : src/animacion.cpp include/*.hpp
+	@mkdir -p bin
+	g++ -Iinclude -o bin/animacion src/animacion.cpp -lftxui-component -lftxui-dom -lftxui-screen
 #Enlazando libreria compilada
 
-ejemplo : bin/ejemplo
-	./bin/ejemplo
-
+animacion : bin/animacion
+	./bin/animacion
